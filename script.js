@@ -4,15 +4,34 @@ function init() {
   ctx.strokeStyle = "#fff5";
 
   step({
-    start: { x: 0, y: Math.random() * 720 },
+    start: { x: Math.random() * window.outerWidth, y: 0 },
     length: 5,
     theta: Math.PI / 2,
   });
 
   step({
-    start: { x: 0, y: Math.random() * 720 },
+    start: {
+      x: Math.random() * window.outerWidth,
+      y: window.outerHeight,
+    },
     length: 5,
-    theta: -(Math.PI / 8),
+    theta: -Math.PI / 2,
+  });
+  step({
+    start: {
+      x: 0,
+      y: Math.random() * window.outerHeight,
+    },
+    length: 5,
+    theta: 0,
+  });
+  step({
+    start: {
+      x: window.outerWidth,
+      y: Math.random() * window.outerHeight,
+    },
+    length: 5,
+    theta: Math.PI,
   });
 }
 
@@ -34,19 +53,7 @@ function step(b, depth = 0) {
       )
     );
   }
-  if (depth < 4 || Math.random() < 0.3) {
-    pendingTasks.push(() =>
-      step(
-        {
-          start: end,
-          length: b.length + (Math.random() * 2 - 1),
-          theta: b.theta + 0.2 * Math.random(),
-        },
-        depth + 1
-      )
-    );
-  }
-  if (depth < 4 || Math.random() < 0.2) {
+  if (depth < 4 || Math.random() < 0.5) {
     pendingTasks.push(() =>
       step(
         {
@@ -68,12 +75,14 @@ function frame() {
   });
   tasks.forEach((fn) => fn());
 }
-
+let framesCount = 0
 function startFrame() {
   requestAnimationFrame(() => {
-    frame();
-    startFrame();
-  });
+    framesCount += 1
+    if (framesCount % 3 === 0)
+      frame()
+    startFrame()
+  })
 }
 
 startFrame();
